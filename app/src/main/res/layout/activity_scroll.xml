@@ -13,19 +13,18 @@
     <!-- Custom Bottom Nav nhỏ gọn -->
     <LinearLayout
         android:id="@+id/customNav"
-        android:layout_width="200dp"
+        android:layout_width="wrap_content"
         android:layout_height="56dp"
-        android:layout_gravity="bottom|center_horizontal"
+        android:layout_gravity="bottom|start"
         android:layout_marginBottom="16dp"
         android:orientation="horizontal"
         android:gravity="center"
         android:background="@drawable/bg_nav"
-        android:elevation="8dp"
-        android:paddingHorizontal="8dp">
+        android:elevation="8dp">
 
         <ImageButton
             android:id="@+id/btnHome"
-            android:layout_width="0dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@android:drawable/ic_menu_view"
@@ -35,9 +34,8 @@
 
         <ImageButton
             android:id="@+id/btnProfile"
-            android:layout_width="0dp"
+            android:layout_width="80dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
             android:src="@android:drawable/ic_menu_myplaces"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="Profile"

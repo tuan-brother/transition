@@ -3,8 +3,10 @@ package com.ta.demo.behavior
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.OvershootInterpolator
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.SimpleAdapter
@@ -25,6 +27,8 @@ class ScrollActivity : AppCompatActivity() {
     private var isExpanded = true
     private var currentTab = 0 // 0 = Home, 1 = Profile
     lateinit var binding: ActivityScrollBinding
+    private var fullWidth = 0
+    private var smallWidth = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,6 +36,17 @@ class ScrollActivity : AppCompatActivity() {
         binding = ActivityScrollBinding.inflate(layoutInflater)
         setContentView(binding.root)
         customNav = findViewById(R.id.customNav)
+
+        // Đo width khi view đã render
+        customNav.post {
+            fullWidth = customNav.width // width 2 nút
+            binding.btnProfile.visibility = View.GONE
+            customNav.post {
+                smallWidth = customNav.width // width 1 nút
+                binding.btnProfile.visibility = View.VISIBLE // reset về trạng thái ban đầu
+            }
+        }
+
 
         binding.btnHome.setOnClickListener {
             currentTab = 0
@@ -78,14 +93,20 @@ class ScrollActivity : AppCompatActivity() {
 
     fun expandNav() {
         if (!isExpanded) {
-            animateNavWidth(customNav.width, dpToPx(200))
-
             val showBtn = if (currentTab == 0) binding.btnProfile else binding.btnHome
+            showBtn.visibility = View.VISIBLE
+            showBtn.alpha = 0f
+            showBtn.scaleX = 0.5f
+            showBtn.scaleY = 0.5f
+
+            animateNavWidth(smallWidth, fullWidth)
+
             showBtn.animate()
                 .alpha(1f)
                 .scaleX(1f)
                 .scaleY(1f)
-                .setDuration(250)
+                .setInterpolator(OvershootInterpolator())
+                .setDuration(300)
                 .start()
 
             isExpanded = true
@@ -94,30 +115,33 @@ class ScrollActivity : AppCompatActivity() {
 
     fun shrinkNav() {
         if (isExpanded) {
-            animateNavWidth(customNav.width, dpToPx(100))
-
             val hideBtn = if (currentTab == 0) binding.btnProfile else binding.btnHome
+
+            animateNavWidth(fullWidth, smallWidth)
+
             hideBtn.animate()
                 .alpha(0f)
-                .scaleX(0.5f) // Thu nhỏ icon còn 50%
+                .scaleX(0.5f)
                 .scaleY(0.5f)
-                .setDuration(250)
+                .setInterpolator(AccelerateDecelerateInterpolator())
+                .setDuration(300)
+                .withEndAction { hideBtn.visibility = View.GONE }
                 .start()
 
             isExpanded = false
         }
     }
 
-
     private fun animateNavWidth(from: Int, to: Int) {
-        val animator = ValueAnimator.ofInt(from, to)
-        animator.duration = 250
-        animator.addUpdateListener {
+        val anim = ValueAnimator.ofInt(from, to)
+        anim.addUpdateListener {
             val params = customNav.layoutParams
             params.width = it.animatedValue as Int
             customNav.layoutParams = params
         }
-        animator.start()
+        anim.duration = 300
+        anim.interpolator = AccelerateDecelerateInterpolator()
+        anim.start()
     }
 
     private fun dpToPx(dp: Int): Int {

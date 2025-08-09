@@ -10,18 +10,36 @@ import androidx.recyclerview.widget.RecyclerView
 import com.ta.demo.R
 
 class ProfileFragment : Fragment() {
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+//        val view = inflater.inflate(R.layout.fragment_profile, container, false)
+//        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+//
+//        recyclerView.layoutManager = LinearLayoutManager(context)
+//        recyclerView.adapter = SimpleAdapter((1..50).map { "Item $it" })
+//
+//        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+//            override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+//                val activity = requireActivity() as ScrollActivity
+//                if (dy > 5) activity.hideNav()
+//                else if (dy < -5) activity.showNav()
+//            }
+//        })
+//
+//        return view
+//    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_profile, container, false)
+        val view = inflater.inflate(R.layout.fragment_home, container, false)
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
 
         recyclerView.layoutManager = LinearLayoutManager(context)
-        recyclerView.adapter = SimpleAdapter((1..50).map { "Item $it" })
+        recyclerView.adapter = SimpleAdapter((1..50).map { "Home Item $it" })
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
                 val activity = requireActivity() as ScrollActivity
-                if (dy > 5) activity.hideNav()
-                else if (dy < -5) activity.showNav()
+                if (dy > 5) activity.shrinkNav()
+                else if (dy < -5) activity.expandNav()
             }
         })
 
